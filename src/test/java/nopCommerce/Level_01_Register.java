@@ -98,6 +98,9 @@ public class Level_01_Register {
         Assert.assertEquals(driver.findElement(By.cssSelector("#ConfirmPassword-error")).getText(), "The password and confirmation password do not match.");
     }
 
+    @Test
+    public void TC_06_Login(){}
+
     @AfterClass
     public void afterClass() {
         driver.quit();
