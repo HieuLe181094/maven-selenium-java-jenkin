@@ -115,6 +115,13 @@
             <version>${owner.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.4.0</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -139,7 +146,7 @@
                 <version>3.1.2</version>
                 <configuration>
                     <suiteXmlFiles>
-                        <suiteXmlFile>src/test/resources/nopCommerce.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/techPanda.xml</suiteXmlFile>
                     </suiteXmlFiles>
 
                     <argLine>
