@@ -7,8 +7,8 @@
     </listeners>
 
 
-    <test name="Run on Firefox browser" >
-        <parameter name="browser" value="firefox"/>
+    <test name="Run on Chrome browser" >
+        <parameter name="browser" value="chrome"/>
         <classes>
             <class name="techPanda.Level_01_Register"/>
         </classes>
