@@ -9,11 +9,13 @@
     <artifactId>maven-hybrid-framework</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <!-- ======================================================== -->
+    <!--  PROPERTIES                                              -->
+    <!-- ======================================================== -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <!-- Java 21 -->
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
 
@@ -23,49 +25,60 @@
         <allure.version>2.24.0</allure.version>
         <extent.version>5.1.2</extent.version>
         <log4j.version>2.24.3</log4j.version>
-        <reportng.version>1.1.4</reportng.version>
-        <jira.version>0.5</jira.version>
-        <owner.version>1.0.12</owner.version>
-        <environment>dev</environment>
+
+        <!-- Dynamic suite file for Jenkins -->
+        <suiteXmlFile>src/test/resources/techPanda.xml</suiteXmlFile>
     </properties>
 
+    <!-- ======================================================== -->
+    <!--  DEPENDENCIES                                            -->
+    <!-- ======================================================== -->
     <dependencies>
 
-        <!-- TestNG -->
+        <!-- TESTNG -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
+            <scope>test</scope>
         </dependency>
 
-        <!-- Selenium -->
+        <!-- SELENIUM -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>${selenium.version}</version>
         </dependency>
 
-        <!-- Optional but recommended -->
+        <!-- WebDriverManager -->
         <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-support</artifactId>
-            <version>${selenium.version}</version>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.4.0</version>
         </dependency>
 
+        <!-- Allure -->
         <dependency>
-            <groupId>org.uncommons</groupId>
-            <artifactId>reportng</artifactId>
-            <version>${reportng.version}</version>
-            <scope>test</scope>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure.version}</version>
         </dependency>
 
+        <!-- ExtentReports -->
         <dependency>
             <groupId>com.aventstack</groupId>
             <artifactId>extentreports</artifactId>
-            <version>5.1.2</version>
+            <version>${extent.version}</version>
         </dependency>
 
+        <!-- AspectJ (bắt buộc cho logging/report) -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
 
+        <!-- Logging -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
@@ -79,55 +92,26 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.15.1</version>
         </dependency>
-
         <dependency>
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-testng</artifactId>
-            <version>${allure.version}</version>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.11.0</version>
+            <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.rcarz</groupId>
-            <artifactId>jira-client</artifactId>
-            <version>${jira.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.aeonbits.owner</groupId>
-            <artifactId>owner</artifactId>
-            <version>${owner.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.bonigarcia</groupId>
-            <artifactId>webdrivermanager</artifactId>
-            <version>5.4.0</version>
-        </dependency>
-
 
     </dependencies>
 
+    <!-- ======================================================== -->
+    <!--  BUILD CONFIG                                            -->
+    <!-- ======================================================== -->
     <build>
         <plugins>
 
-            <!-- Java 21 compiler -->
+            <!-- JAVA 21 COMPILER -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -139,22 +123,35 @@
                 </configuration>
             </plugin>
 
-            <!-- Surefire (run TestNG) -->
+            <!-- SUREFIRE: RUN TESTNG SUITE & GENERATE REPORT -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
+
+                    <!-- Allow Jenkins to override suite file -->
                     <suiteXmlFiles>
-                        <suiteXmlFile>src/test/resources/techPanda.xml</suiteXmlFile>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
 
+                    <!-- Required to generate testng-results.xml -->
+                    <properties>
+                        <property>
+                            <name>usedefaultlisteners</name>
+                            <value>true</value>
+                        </property>
+                    </properties>
+
+                    <!-- Required for Allure & AspectJ -->
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
+
                 </configuration>
             </plugin>
 
         </plugins>
     </build>
+
 </project>
